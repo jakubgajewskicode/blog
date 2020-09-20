@@ -10,6 +10,9 @@ export default () => (
       </li>
       <li className={styles.navigationItem}>
         <Link to="/blog/">Blog</Link>
+        <li className={styles.navigationItem}>
+          <Link to={`/test/`}>React Hooks</Link>
+        </li>
       </li>
     </ul>
   </nav>
