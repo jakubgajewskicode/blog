@@ -3,9 +3,28 @@ import { graphql } from 'gatsby'
 import { Helmet } from 'react-helmet'
 import get from 'lodash/get'
 import Img from 'gatsby-image'
-import Layout from '../components/layout'
+import Layout from '../components/Layout/layout'
+import styled from 'styled-components'
 
-import heroStyles from '../components/hero.module.css'
+const StyledHero = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 12.5em;
+  background: #e1e1e1;
+  margin: -1em -2.5em 1em;
+  font-size: 2em;
+`
+
+const StyledImg = styled(Img)`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 12.5em;
+  background: #e1e1e1;
+  margin: -1em -2.5em 1em;
+  font-size: 2em;
+`
 
 class BlogPostTemplate extends React.Component {
   render() {
@@ -16,13 +35,9 @@ class BlogPostTemplate extends React.Component {
       <Layout location={this.props.location}>
         <div style={{ background: '#fff' }}>
           <Helmet title={`${post.title} | ${siteTitle}`} />
-          <div className={heroStyles.hero}>
-            <Img
-              className={heroStyles.heroImage}
-              alt={post.title}
-              fluid={post.heroImage.fluid}
-            />
-          </div>
+          <StyledHero>
+            <StyledImg alt={post.title} fluid={post.heroImage.fluid} />
+          </StyledHero>
           <div className="wrapper">
             <h1 className="section-headline">{post.title}</h1>
             <p
