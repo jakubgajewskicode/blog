@@ -30,6 +30,9 @@ export default () => (
         <Item>
           <Link to={`/test/`}>React Hooks</Link>
         </Item>
+        <Item>
+          <Link to={`/chat/`}>Chat</Link>
+        </Item>
       </Item>
     </List>
   </nav>
