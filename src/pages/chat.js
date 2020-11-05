@@ -16,11 +16,7 @@ const fireBaseConfig = {
 
 const {apiKey, appId} = fireBaseConfig
 
-if (!apiKey) {
-  throw new Error (
-    'pls provide Api Key'
-  )
-}
+
 
 firebase.initializeApp({
   apiKey: apiKey,
