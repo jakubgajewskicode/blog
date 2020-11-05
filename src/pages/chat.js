@@ -17,7 +17,6 @@ const fireBaseConfig = {
 const {apiKey, appId} = fireBaseConfig
 
 
-
 firebase.initializeApp({
   apiKey: apiKey,
   authDomain: "chat-7d1fe.firebaseapp.com",
