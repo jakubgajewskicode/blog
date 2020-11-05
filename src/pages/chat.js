@@ -1,30 +1,152 @@
 import React, { useState, useRef } from 'react'
-import firebase from 'firebase/app'
-import 'firebase/firestore'
-import 'firebase/auth'
-import './css/index.css'
 import styled from 'styled-components'
 
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { useCollectionData } from 'react-firebase-hooks/firestore'
+
+import firebase from 'firebase/app';
+import 'firebase/firestore';
+import 'firebase/auth';
+import 'firebase/analytics';
+
+const fireBaseConfig = {
+  apiKey: process.env.FIREBASE_API_KEY,
+  appId: process.env.APP_ID
+}
+
+const {apiKey, appId} = fireBaseConfig
+
+if (!apiKey) {
+  throw new Error (
+    'pls provide Api Key'
+  )
+}
+
+firebase.initializeApp({
+  apiKey: apiKey,
+  authDomain: "chat-7d1fe.firebaseapp.com",
+  databaseURL: "https://chat-7d1fe.firebaseio.com",
+  projectId: "chat-7d1fe",
+  storageBucket: "chat-7d1fe.appspot.com",
+  messagingSenderId: "614752894781",
+  appId: appId
+})
+
 
 const Main = styled.div`
   text-align: center;
   max-width: 728px;
   margin: 0 auto;
 `
-// Your web app's Firebase configuration
-var firebaseConfig = {
-  apiKey: 'AIzaSyDDWjnSjY9Wz7JLodY1vz8JPiFkqNZG0k8',
-  authDomain: 'chat-7d1fe.firebaseapp.com',
-  databaseURL: 'https://chat-7d1fe.firebaseio.com',
-  projectId: 'chat-7d1fe',
-  storageBucket: 'chat-7d1fe.appspot.com',
-  messagingSenderId: '614752894781',
-  appId: '1:614752894781:web:fd0603b850d7a59bc44f54',
-}
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig)
+
+const Header = styled.h4`
+  background-color: #181717;
+  height: 10vh;
+  min-height: 50px;
+  color: white;
+  position: fixed;
+  width: 100%;
+  max-width: 728px;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 99;
+  padding: 10px;
+  box-sizing: border-box;
+`
+
+const Section = styled.section`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: rgb(40, 37, 53);
+`
+
+const Messages = styled.div`
+  padding: 10px;
+  height: 80vh;
+  margin: 10vh 0 10vh;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  ::-webkit-scrollbar {
+    width: 0.25rem;
+  }
+  ::-webkit-scrollbar-track {
+    background: #1e1e24;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #6649b8;
+  }
+`
+const Text = styled.p`
+  max-width: 500px;
+  margin-bottom: 12px;
+  line-height: 24px;
+  padding: 10px 20px;
+  border-radius: 25px;
+  position: relative;
+  color: white;
+  text-align: center;
+  color: ${({value})=> value === 'received' ? `black` : `white`};
+  background: ${({value})=> value === 'received' ? `#e5e5ea` : `#0b93f6`};
+  
+
+`
+const Image = styled.img`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin: 2px 5px;
+`
+
+const Form = styled.form`
+  height: 10vh;
+  position: fixed;
+  bottom: 0;
+  background-color: rgb(24, 23, 23);
+  width: 100%;
+  max-width: 728px;
+  display: flex;
+  font-size: 1.5rem;
+`
+
+const FormButton = styled.button`
+  width: 20%;
+  background-color: rgb(56, 56, 143);
+`
+
+const Input = styled.input`
+  line-height: 1.5;
+  width: 100%;
+  font-size: 1.5rem;
+  background: rgb(58, 58, 58);
+  color: white;
+  outline: none;
+  border: none;
+  padding: 0 10px;
+`
+
+const Button = styled.button`
+  background-color: #282c34; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  font-size: 1.25rem;
+`
+
+
+const Span = styled.span`
+display: flex;
+align-items: center;
+flex-direction: ${({value})=> value === 'sent' ? `row-reverse` : `row`};
+`
 
 function Chat() {
   const auth = firebase.auth()
@@ -38,9 +160,9 @@ function Chat() {
       auth.signInWithPopup(provider)
     }
     return (
-      <button className="sign-in" onClick={signInWithGoogle}>
+      <Button  onClick={signInWithGoogle}>
         Sign in with Google
-      </button>
+      </Button>
     )
   }
 
@@ -49,7 +171,7 @@ function Chat() {
       auth.signOut()
     }
     return (
-      auth.currentUser && <button onClick={signOutWithGoogle}>Sign Out</button>
+      auth.currentUser && <Button onClick={signOutWithGoogle}>Sign Out</Button>
     )
   }
 
@@ -77,20 +199,21 @@ function Chat() {
 
     return (
       <>
-        <main>
+        <Messages>
           {messages &&
             messages.map((msg, i) => <ChatMessage message={msg} key={i} />)}
           <span ref={fake}></span>
-        </main>
+        </Messages>
 
-        <form onSubmit={sendMessage}>
-          <input
+        <Form onSubmit={sendMessage}>
+          <Input
             value={formValue}
             onChange={(e) => setFormValue(e.target.value)}
+            placeholder="say something nice"
           />
 
-          <button type="submit">🚀</button>
-        </form>
+          <FormButton type="submit">🚀</FormButton>
+        </Form>
       </>
     )
   }
@@ -101,24 +224,27 @@ function Chat() {
     const messageClass = uid === auth.currentUser.uid ? 'sent' : 'received'
 
     return (
-      <div className={`message ${messageClass}`}>
-        <img src={photoURL} alt="" />
-        <p>{text}</p>
-      </div>
+  
+   <Span value={`${messageClass}`}>
+        <Image src={photoURL || `https://avatars.dicebear.com/api/male/john.svg?mood[]=happy`} alt="" />
+        <Text value={`${messageClass}`} >{text}</Text>
+  
+      </Span>
     )
   }
 
   return (
     <>
       <Main>
-        <header>
+        <Header>
           <h1>⚛️🔥💬</h1>
           <SignOut />
-        </header>
-        <section>{user ? <ChatRoom /> : <SignIn />}</section>
+        </Header>
+        <Section>{user ? <ChatRoom /> : <SignIn />}</Section>
       </Main>
     </>
   )
 }
 
 export default Chat
+

@@ -57,13 +57,20 @@ export default function Hooks() {
 // CustomHooks - We can write them inside render or we can just seperate them to make code cleaner
 
 function useWindowWidth() {
+
+
+  if (typeof window !== `undefined`) {
+
   const [width, setWith] = useState(window.innerWidth)
+
   useEffect(() => {
     const handleResize = () => setWith(window.innerWidth)
+
     window.addEventListener('resize', handleResize)
     return () => {
       window.removeEventListener('resize', handleResize)
     }
   })
   return width
+}
 }
