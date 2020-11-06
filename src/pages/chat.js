@@ -145,6 +145,9 @@ flex-direction: ${({value})=> value === 'sent' ? `row-reverse` : `row`};
 `
 
 function Chat() {
+  if(typeof window !== "undefined") {
+
+
   const auth = firebase.auth()
   const firestore = firebase.firestore()
 
@@ -240,6 +243,7 @@ function Chat() {
       </Main>
     </>
   )
+}
 }
 
 export default Chat
