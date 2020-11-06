@@ -2,6 +2,12 @@ require('dotenv').config({
   path: `.env.${process.env.NODE_ENV}`,
 })
 
+let firebase
+
+if (typeof window !== 'undefined') {
+  firebase = require('firebase')
+}
+
 const contentfulConfig = {
   spaceId: process.env.CONTENTFUL_SPACE_ID,
   accessToken: process.env.CONTENTFUL_ACCESS_TOKEN,
