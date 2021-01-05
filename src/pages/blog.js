@@ -10,7 +10,7 @@ import styled from 'styled-components'
 const StyledHero = styled.div`
   display: flex;
   justify-content: center;
-   align-items: center;
+  align-items: center;
   height: 61.8vh;
   max-height: 400px;
   background: #e1e1e1;
