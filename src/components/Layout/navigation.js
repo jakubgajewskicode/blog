@@ -9,7 +9,7 @@ const List = styled.ul`
   padding: 0;
   margin: 0;
   height: 20vh;
-  max-height: 100px;
+  max-height: 101px;
   font-size: 1.25em;
 `
 
